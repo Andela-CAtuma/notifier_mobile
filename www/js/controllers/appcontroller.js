@@ -1,45 +1,73 @@
 angular.module('starter.controllers', ['ngResource', 'ionic'])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, Merchant) {
-    // Form data for the login modal
-    $scope.loginData = {};
+.controller('AppCtrl', function($scope, $timeout, $http, $location, Authentication) {
+  $scope.authentication = Authentication;
 
-    // Create the login modal that we will use later
-    $ionicModal.fromTemplateUrl('templates/login.html', {
-        scope: $scope
-    }).then(function(modal) {
-        $scope.modal = modal;
+  // If user is signed in then redirect back home
+  // if ($scope.authentication.user) $location.path('/');
+
+  $scope.signup = function() {
+    console.log('data', $scope.credentials);
+    $http.post('http://notifier007.herokuapp.com/#!/auth/signup', $scope.credentials).success(function(response) {
+      // If successful we assign the response to the global user model
+      $scope.authentication.user = response;
+
+      // And redirect to the index page
+      // $location.path('/home');
+
     });
+  };
+  $scope.signin = function() {
+    console.log('data', $scope.credentials);
+    $http.post('http://notifier007.herokuapp.com/#!/auth/signin', $scope.credentials).success(function(response) {
+      // If successful we assign the response to the global user model
+      $scope.authentication.user = response;
 
-    // Triggered in the login modal to close it
-    $scope.closeLogin = function() {
-        $scope.modal.hide();
-    };
+      // And redirect to the index page
+      // $location.path('/home');
+    }).error(function(response) {
+      // $scope.error = response.message;
+    });
+  };
+    // // Form data for the login modal
+    // $scope.loginData = {};
 
-    // Open the login modal
-    $scope.login = function() {
-        $scope.modal.show();
-    };
+    // // Create the login modal that we will use later
+    // $ionicModal.fromTemplateUrl('templates/login.html', {
+    //     scope: $scope
+    // }).then(function(modal) {
+    //     $scope.modal = modal;
+    // });
 
-    // Perform the login action when the user submits the login form
-   
-    $scope.doLogin = function() {
+    // // Triggered in the login modal to close it
+    // $scope.closeLogin = function() {
+    //     $scope.modal.hide();
+    // };
 
-      $scope.loginData = {email: $scope.loginData.username, password: $scope.loginData.password, "ttl": 1209600000};
+    // // Open the login modal
+    // $scope.login = function() {
+    //     $scope.modal.show();
+    // };
 
-      console.log('Doing login', $scope.loginData);
-     
-      $scope.loginResult = Merchant.login($scope.loginData,function() {
-          console.log("Logged in");
-          $scope.closeLogin();
-        }, function(res) {
-          console.log("Not logged in");
-          $scope.closeLogin();
-        });
+    // // Perform the login action when the user submits the login form
 
-      console.log($scope.loginResult);
+    // $scope.doLogin = function() {
 
-    };
+    //   $scope.loginData = {email: $scope.loginData.username, password: $scope.loginData.password, "ttl": 1209600000};
+
+    //   console.log('Doing login', $scope.loginData);
+
+    //   $scope.loginResult = Merchant.login($scope.loginData,function() {
+    //       console.log("Logged in");
+    //       $scope.closeLogin();
+    //     }, function(res) {
+    //       console.log("Not logged in");
+    //       $scope.closeLogin();
+    //     });
+
+    //   console.log($scope.loginResult);
+
+    // };
 
 })
 .run(function($rootScope) {

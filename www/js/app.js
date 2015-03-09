@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
 
-angular.module('starter', ['ionic', 'ngResource', 'lbServices', 'starter.controllers','ngCordova', 'gettext','nfcFilters'])
+angular.module('starter', ['ionic', 'ngResource', 'starter.controllers', 'ngCordova', 'gettext'])
 
 
 .run(function($ionicPlatform) {
@@ -24,105 +24,96 @@ angular.module('starter', ['ionic', 'ngResource', 'lbServices', 'starter.control
   .config(['$httpProvider', function($httpProvider, gettextCatalog) {
     $httpProvider.defaults.withCredentials = true;
   }])
+  .config(['$httpProvider',
+    function($httpProvider) {
+      // Set the httpProvider "not authorized" interceptor
+      $httpProvider.interceptors.push(['$q', '$location', 'Authentication',
+        function($q, $location, Authentication) {
+          return {
+            responseError: function(rejection) {
+              switch (rejection.status) {
+                case 401:
+                  // Deauthenticate the global user
+                  Authentication.user = null;
 
+                  // Redirect to signin page
+                  $location.path('signin');
+                  break;
+                case 403:
+                  // Add unauthorized behaviour
+                  break;
+              }
 
+              return $q.reject(rejection);
+            }
+          };
+        }
+      ]);
+    }
+  ])
 
-.factory('nfcService', function($rootScope, $ionicPlatform) {
-
-    var tag = {};
-
-    $ionicPlatform.ready(function() {
-
-      nfc.addTagDiscoveredListener(function(nfcEvent) {
-
-      }, function() {
-        console.log("Listening for tag discovered");
-      }, function() {
-        console.
-        nfc.addNdefListener(function(nfcEvent) {
-          console.log(JSON.stringify(nfcEvent.tag, null, 4));
-          log("Error adding listener");
-        });
-
-        nfc.erase(function() {
-
-          var message = [
-            ndef.textRecord("Balance is: 10"),
-          ];
-
-          nfc.write(message, function() {
-            console.log("Wrote OK");
-          }, function() {
-            console.log("Write failed");
-          });
-
-        }, function() {
-
-        });
-
-        $rootScope.$apply(function() {
-          angular.copy(nfcEvent.tag, tag);
-          // if necessary $state.go('some-route')
-        });
-      }, function() {
-        console.log("Listening for NDEF Tags.");
-      }, function(reason) {
-        alert("Error adding NFC Listener " + reason);
-      });
-    });
-    return {
-      tag: tag,
-      clearTag: function() {
-        angular.copy({}, this.tag);
+.config(function($stateProvider, $urlRouterProvider) {
+  $stateProvider
+    .state('app', {
+      url: "/app",
+      abstract: true,
+      templateUrl: "templates/menu.html",
+      controller: 'AppCtrl'
+    })
+    .state('app.weathermap', {
+      url: "/weathermap",
+      views: {
+        'menuContent': {
+          templateUrl: "templates/weathermap.html",
+          // controller: 'MainController'
+        }
       }
-    };
-  })
-
-  .config(function($stateProvider, $urlRouterProvider) {
-    $stateProvider
-
-      .state('app', {
-        url: "/app",
-        abstract: true,
-        templateUrl: "templates/menu.html",
-        controller: 'AppCtrl'
-      })
-      .state('app.createAcoount', {
-        url: "/createAccount",
-        views: {
-          'menuContent': {
-            templateUrl: "templates/createAccount.html",
-            // controller: 'MainController'
-          }
+    })
+    .state('app.createAccount', {
+      url: "/createAccount",
+      views: {
+        'menuContent': {
+          templateUrl: "templates/createAccount.html",
+          controller: 'AppCtrl'
         }
-      })
-      .state('app.editprofile', {
-        url: "/editprofile",
-        views: {
-          'menuContent': {
-            templateUrl: "templates/editProfile.html",
-            // controller: 'MainController'
-          }
+      }
+    }).
+    state('app.signin', {
+      url: "/signin",
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/login.html',
+          controller: 'AppCtrl'
         }
-      })
-      .state('app.viewprofile', {
-        url: "/viewprofile",
-        views: {
-          'menuContent': {
-            templateUrl: "templates/viewProfile.html",
-            // controller: 'MainController'
-          }
+      }
+    })
+    .state('app.editprofile', {
+      url: "/editprofile",
+      views: {
+        'menuContent': {
+          templateUrl: "templates/editProfile.html",
+          // controller: 'MainController'
         }
-      })
-      .state('app.notify', {
-        url: "/notify",
-        views: {
-          'menuContent': {
-            templateUrl: "templates/notify.html",
-            // controller: 'MainController'
-          }
+      }
+    })
+    .state('app.viewprofile', {
+      url: "/viewprofile",
+      views: {
+        'menuContent': {
+          templateUrl: "templates/viewProfile.html",
+          // controller: 'MainController'
         }
-      })
+      }
+    })
+    .state('app.notify', {
+      url: "/notify",
+      views: {
+        'menuContent': {
+          templateUrl: "templates/notify.html",
+          // controller: 'MainController'
+        }
+      }
+    })
     .state('app.home', {
       url: "/home",
       views: {
@@ -132,6 +123,7 @@ angular.module('starter', ['ionic', 'ngResource', 'lbServices', 'starter.control
         }
       }
     });
-    // if none of the above states are matched, use this as the fallback
-    $urlRouterProvider.otherwise('/app/home');
-  });
+
+// if none of the above states are matched, use this as the fallback
+$urlRouterProvider.otherwise('/app/home');
+});

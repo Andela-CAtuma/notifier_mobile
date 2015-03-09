@@ -1,37 +1,35 @@
-
-<ion-view view-title="Welcome To Nofitier">
-  <ion-content>
-    <div id="dialog" class="hiddenElm request-intro">
+<ion-view view-title="Create an account">
+  <ion-content ng-controller="AppCtrl">
         <fieldset>
-          <form ng-submit="createAccount()">
+          <form ng-submit="signup()">
             <div class="list">
              <label class="item item-input">
                 <span class="input-label">Firstname</span>
-                <input type="password" ng-model="user.password" required>
+                <input type="text" ng-model="credentials.firstname" required>
               </label>
                <label class="item item-input">
                 <span class="input-label">Lastname</span>
-                <input type="password" ng-model="user.password" required>
+                <input type="text" ng-model="credentials.lastname" required>
               </label>
               <label class="item item-input">
                 <span class="input-label">Username</span>
-                <input type="text" ng-model="user.username" required>
+                <input type="text" ng-model="credentials.username" required>
               </label>
               <label class="item item-input">
                 <span class="input-label">Location</span>
-                <input type="password" ng-model="user.password" required>
+                <input type="text" ng-model="credentials.location" required>
               </label>
                <label class="item item-input">
                 <span class="input-label">Email</span>
-                <input type="password" ng-model="user.password" required>
+                <input type="email" ng-model="credentials.email" required>
               </label>
               <label class="item item-input">
                 <span class="input-label">Password</span>
-                <input type="password" ng-model="user.password" required>
+                <input type="password" ng-model="credentials.password" required>
               </label>
               <label class="item item-input">
                 <span class="input-label">Confirm Password</span>
-                <input type="password" ng-model="user.confirmpassword" required>
+                <input type="password" ng-model="credentials.confirmpassword" required>
               </label>
               <label class="item">
                 <button class="button button-block button-positive" type="submit">Sign Up</button>
@@ -39,6 +37,5 @@
             </div>
         </form>
       </fieldset>
-    </div>
   </ion-content>
 </ion-view>
