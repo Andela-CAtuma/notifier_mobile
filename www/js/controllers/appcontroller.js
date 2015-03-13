@@ -10,31 +10,36 @@ angular.module('starter.controllers', ['ngResource', 'ionic'])
     console.log('data', $scope.credentials);
     var signup_user = {
       method: 'POST',
-      url: '//notifier007.herokuapp.com/auth/signin',
+      url: '//localhost:5000/auth/signup',
       headers: {
               'Content-Type': undefined
             },
             data: $scope.credentials
     };
+
     $http(signup_user).success(function(response) {
+    console.log('data', response);
+
     // $http.post('//notifier007.herokuapp.com/auth/signup', $scope.credentials).success(function(response) {
       // If successful we assign the response to the global user model
       $scope.authentication.user = response;
-      // And redirect to the index page
-      // $location.path('/home');
 
+      //And redirect to the index page
+      $location.path('/app/viewprofile');
+    }).error(function(response) {
+      $scope.error = response.message;
     });
   };
   $scope.signin = function() {
     console.log('data', $scope.credentials);
-    $http.post('http://notifier007.herokuapp.com/#!/auth/signin', $scope.credentials).success(function(response) {
+    $http.post('//localhost:5000/auth/signin', $scope.credentials).success(function(response) {
       // If successful we assign the response to the global user model
       $scope.authentication.user = response;
 
       // And redirect to the index page
-      // $location.path('/home');
+      $location.path('/app/notify');
     }).error(function(response) {
-      // $scope.error = response.message;
+      $scope.error = response.message;
     });
   };
     // // Form data for the login modal
