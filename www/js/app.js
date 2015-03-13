@@ -22,7 +22,7 @@ angular.module('starter', ['ionic', 'ngResource', 'starter.controllers', 'ngCord
     });
   })
   .config(['$httpProvider', function($httpProvider, gettextCatalog) {
-    $httpProvider.defaults.withCredentials = true;
+    $httpProvider.defaults.withCredentials = false;
   }])
   .config(['$httpProvider',
     function($httpProvider) {

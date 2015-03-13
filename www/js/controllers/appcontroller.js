@@ -8,10 +8,18 @@ angular.module('starter.controllers', ['ngResource', 'ionic'])
 
   $scope.signup = function() {
     console.log('data', $scope.credentials);
-    $http.post('http://notifier007.herokuapp.com/#!/auth/signup', $scope.credentials).success(function(response) {
+    var signup_user = {
+      method: 'POST',
+      url: '//notifier007.herokuapp.com/auth/signin',
+      headers: {
+              'Content-Type': undefined
+            },
+            data: $scope.credentials
+    };
+    $http(signup_user).success(function(response) {
+    // $http.post('//notifier007.herokuapp.com/auth/signup', $scope.credentials).success(function(response) {
       // If successful we assign the response to the global user model
       $scope.authentication.user = response;
-
       // And redirect to the index page
       // $location.path('/home');
 
